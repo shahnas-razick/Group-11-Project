@@ -31,6 +31,14 @@ int authenticateUser(int userType, char* userId, char* password) {
     return 0;
 }
 
+void displayMenu() {
+    printf("\n=== Medical Record System Login ===\n");
+    printf("1. Admin\n");
+    printf("2. Doctor\n");
+    printf("3. Lab Assistant\n");
+    printf("4. Exit\n");
+    printf("Enter your choice (1-4): ");
+}
 int main(){
 
 }
