@@ -4,7 +4,7 @@
 
 #define MAX_LENGTH 50
 
-// login function
+// Function to Login user
 int authenticateUser(int userType, char* userId, char* password) {
     FILE* file = fopen("./data/users.txt", "r");
     if (file == NULL) {
@@ -29,25 +29,26 @@ int authenticateUser(int userType, char* userId, char* password) {
     fclose(file);
     return 0;
 }
-// banner and menu
+
+// Function to display menu
 void displayMenu() {
 
-    printf("\x1b[34m _        _            _              _          \n");
-    printf("| |      |_   _| |  |   | ____|    / ____|      /\\     |   \\    |  ____|  \n");
-    printf("| |        | |   | |    | |      | |         /  \\    | |) | | |     \n");
-    printf("| |        | |   |  |   |  |     | |        / /\\ \\   |  _  /  |  |    \n");
-    printf("| |____   _| |_  | |      | |____    | |____   /  \\  | | \\ \\  | |__   \n");
-    printf("|______| |_____| |_|      |______|    \\_____| /_/    \\_\\ |_|  \\_\\ |______|\x1b[0m\n");
+    printf("\x1b[34m  _      _____ ______ ______    _____          _____  ______ \n");
+    printf(" | |    |_   _|  ____|  ____|  / ____|   /\\   |  __ \\|  ____|\n");
+    printf(" | |      | | | |__  | |__    | |       /  \\  | |__) | |__   \n");
+    printf(" | |      | | |  __| |  __|   | |      / /\\ \\ |  _  /|  __|  \n");
+    printf(" | |____ _| |_| |    | |____  | |____ / ____ \\| | \\ \\| |____ \n");
+    printf(" |______|_____|_|    |______|  \\_____/_/    \\_\\_|  \\_\\______|\x1b[0m\n");
+    printf("\n\x1b[31mWelcome to Life Care - A Medical Record Management System\x1b[0m\n\n");
 
 
-    printf("\n\x1b[31m=== Medical Record System Login ===\n");
+    printf("\n\x1b[31m=== Login ===\n");
     printf("\x1b[33m1. Admin\n");
     printf("2. Doctor\n");
     printf("3. Lab Assistant\n");
     printf("4. Exit\n");
     printf("Enter your choice (1-4): ");
 }
-
 
 int main() {
     int choice;
