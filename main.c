@@ -32,6 +32,14 @@ int authenticateUser(int userType, char* userId, char* password) {
 }
 
 void displayMenu() {
+    
+    printf(" _        _            _              _          \n");
+    printf("| |      |_   _| |  |   | ____|    / ____|      /\\     |   \\    |  ____|  \n");
+    printf("| |        | |   | |    | |      | |         /  \\    | |) | | |     \n");
+    printf("| |        | |   |  |   |  |     | |        / /\\ \\   |  _  /  |  |    \n");
+    printf("| |____   _| |_  | |      | |____    | |____   /  \\  | | \\ \\  | |__   \n");
+    printf("|______| |_____| |_|      |______|    \\_____| /_/    \\_\\ |_|  \\_\\ |______|\n");
+
     printf("\n=== Medical Record System Login ===\n");
     printf("1. Admin\n");
     printf("2. Doctor\n");
