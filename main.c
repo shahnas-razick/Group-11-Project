@@ -49,6 +49,42 @@ void displayMenu() {
     printf("Enter your choice (1-4): ");
 }
 
-int main(){
 
+int main() {
+    int choice;
+    char userId[MAX_LENGTH];
+    char password[MAX_LENGTH];
+    
+    while(1) {
+        system("cls");  // Clear screen
+        displayMenu();
+        scanf("%d", &choice);
+
+        if(choice == 4) {
+            printf("\nThank you for using the system.\n");
+            break;
+        }
+
+        if(choice >= 1 && choice <= 3) {
+            printf("Enter User ID: ");
+            scanf("%s", userId);
+            printf("Enter Password: ");
+            scanf("%s", password);
+
+            if(authenticateUser(choice, userId, password)) {
+                printf("\nLogin Successful!\n");
+                printf("Welcome to Medical Record System\n");
+            } else {
+                printf("\nInvalid credentials!\n");
+            }
+            printf("\nPress Enter to continue...");
+            getchar();
+            getchar();
+        } else {
+            printf("\nInvalid choice! Press Enter to continue...");
+            getchar();
+            getchar();
+        }
+    }
+    return 0;
 }
