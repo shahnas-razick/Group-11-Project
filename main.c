@@ -61,7 +61,7 @@ int main() {
         scanf("%d", &choice);
 
         if(choice == 4) {
-            printf("\nThank you for using the system.\n");
+            printf("\nThank you for using the system.\x1b[0m\n");
             break;
         }
 
