@@ -102,37 +102,127 @@ void addPatient()
     printf("\nPatient added successfully!\n");
 }
 
-int main() {
+
+int main()
+{
     int choice;
     char userId[MAX_LENGTH];
     char password[MAX_LENGTH];
-    
-    while(1) {
-        system("cls");  // Clear screen
+
+    while (1)
+    {
+        system("cls"); // Clear screen
         displayMenu();
         scanf("%d", &choice);
 
-        if(choice == 4) {
+        if (choice == 4)
+        {
             printf("\nThank you for using the system.\x1b[0m\n");
             break;
         }
 
-        if(choice >= 1 && choice <= 3) {
+        if (choice >= 1 && choice <= 3)
+        {
             printf("Enter User ID: ");
             scanf("%s", userId);
             printf("Enter Password: ");
             scanf("%s", password);
 
-            if(authenticateUser(choice, userId, password)) {
+            if (authenticateUser(choice, userId, password))
+            {
                 printf("\nLogin Successful!\n");
                 printf("Welcome to Medical Record System\n");
-            } else {
+                int adminChoice;
+                if (choice == 1)
+                {
+                    adminChoice = 0;
+                    while (adminChoice != 11)
+                    {
+                        system("cls");
+                        printf("\n=== Admin Menu ===\n");
+                        printf("1. Add Patient\n");
+                        printf("2. Remove Patient\n");
+                        printf("3. View Patients\n");
+                        printf("4. Add Doctor\n");
+                        printf("5. Remove Doctor\n");
+                        printf("6. View Doctors\n");
+                        printf("7. Book Appointment\n");
+                        printf("8. Cancel Appointment\n");
+                        printf("9. View Appointments\n");
+                        printf("10. Remove Medical Records\n");
+                        printf("11. Logout\n");
+                        printf("12. Exit\n");
+                        printf("Enter your choice (1-12): ");
+                        scanf("%d", &adminChoice);
+                        
+                        if (adminChoice == 11)
+                        {
+                            printf("\nLogging out...\n");
+                            break;
+                        }
+
+                        switch (adminChoice)
+                        {
+                        case 1:
+                            addPatient();
+                            break;
+                        case 2:
+                            // removePatient();
+                            break;
+                        case 3:
+                            // viewPatients();
+                            break;
+                        case 4:
+                            // addDoctor();
+                            break;
+                        case 5:
+                            // removeDoctor();
+                            break;
+                        case 6:
+                            // viewDoctors();
+                            break;
+                        case 7:
+                            // bookAppointment();
+                            break;
+                        case 8:
+                            // cancelAppointment();
+                            break;
+                        case 9:
+                            // viewAppointments();
+                            break;
+                        case 10:
+                            // removeMedicalRecords();
+                            break;
+                        case 12:
+                            printf("\nExiting...\n");
+                            exit(0);
+                        default:
+                            printf("\nInvalid choice!\n");
+                        }
+                        printf("\nPress Enter to continue...");
+                        getchar();
+                        getchar();
+                    }
+                }
+                else if (choice == 2)
+                {
+                    printf("\nYou are logged in as Doctor.\n");
+                }
+                else if (choice == 3)
+                {
+                    printf("\nYou are logged in as Lab Assistant.\n");
+                }
+            }
+            else
+            {
                 printf("\nInvalid credentials!\n");
             }
             printf("\nPress Enter to continue...");
             getchar();
             getchar();
-        } else {
+        }
+        else
+        {
             printf("\nInvalid choice! Press Enter to continue...");
             getchar();
             getchar();
