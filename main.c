@@ -4,6 +4,15 @@
 
 #define MAX_LENGTH 50
 
+struct Patient
+{
+    char NIC[13];        // National Identity Card number
+    char name[50];       // Patient's full name
+    int age;             // Patient's age
+    char address[100];   // Patient's address
+    char contact_no[15]; // Patient's contact number
+};
+
 // Function to Login user
 int authenticateUser(int userType, char* userId, char* password) {
     FILE* file = fopen("./data/users.txt", "r");
@@ -48,6 +57,49 @@ void displayMenu() {
     printf("3. Lab Assistant\n");
     printf("4. Exit\n");
     printf("Enter your choice (1-4): ");
+}
+
+
+void addPatient()
+{
+    struct Patient patient;
+    FILE *file = fopen("./data/patients.txt", "a");
+
+    if (file == NULL)
+    {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    printf("\nEnter patient details:\n");
+    printf("NIC (12 digits): ");
+    scanf("%s", patient.NIC);
+
+    printf("Full Name: ");
+    getchar(); // Clear buffer
+    fgets(patient.name, sizeof(patient.name), stdin);
+    patient.name[strcspn(patient.name, "\n")] = 0; // Remove newline
+
+    printf("Age: ");
+    scanf("%d", &patient.age);
+
+    printf("Address: ");
+    getchar(); // Clear buffer
+    fgets(patient.address, sizeof(patient.address), stdin);
+    patient.address[strcspn(patient.address, "\n")] = 0; // Remove newline
+
+    printf("Contact Number: ");
+    scanf("%s", patient.contact_no);
+
+    fprintf(file, "%s,%s,%d,%s,%s\n",
+            patient.NIC,
+            patient.name,
+            patient.age,
+            patient.address,
+            patient.contact_no);
+
+    fclose(file);
+    printf("\nPatient added successfully!\n");
 }
 
 int main() {
