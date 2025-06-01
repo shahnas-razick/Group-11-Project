@@ -312,6 +312,75 @@ void viewDoctors() {
     fclose(file);
 }
 
+void bookAppointment() {
+    char docNic[13], patientNic[13], date[11];
+    int appointmentNumber = 1;
+    int docFound = 0, patientFound = 0;
+
+    // Get input
+    printf("\nEnter doctor's NIC: ");
+    scanf("%s", docNic);
+    printf("Enter patient's NIC: ");
+    scanf("%s", patientNic);
+    printf("Enter date (DD/MM/YYYY): ");
+    scanf("%s", date);
+
+    // Check if doctor exists
+    FILE *docFile = fopen("./data/doctors.txt", "r");
+    if (docFile != NULL) {
+        char line[256];
+        while (fgets(line, sizeof(line), docFile)) {
+            if (strncmp(line, docNic, strlen(docNic)) == 0) {
+                docFound = 1;
+                break;
+            }
+        }
+        fclose(docFile);
+    }
+
+    // Check if patient exists
+    FILE *patFile = fopen("./data/patients.txt", "r");
+    if (patFile != NULL) {
+        char line[256];
+        while (fgets(line, sizeof(line), patFile)) {
+            if (strncmp(line, patientNic, strlen(patientNic)) == 0) {
+                patientFound = 1;
+                break;
+            }
+        }
+        fclose(patFile);
+    }
+
+    if (!docFound || !patientFound) {
+        printf("\nError: Doctor or patient not found!\n");
+        return;
+    }
+
+    // Get last appointment number
+    FILE *appFile = fopen("./data/appointments.txt", "r");
+    if (appFile != NULL) {
+        char line[256];
+        while (fgets(line, sizeof(line), appFile)) {
+            int currentNum;
+            sscanf(line, "%d,", &currentNum);
+            if (currentNum >= appointmentNumber) {
+                appointmentNumber = currentNum + 1;
+            }
+        }
+        fclose(appFile);
+    }
+
+    // Add new appointment
+    appFile = fopen("./data/appointments.txt", "a");
+    if (appFile != NULL) {
+        fprintf(appFile, "%d,%s,%s,%s\n", appointmentNumber, docNic, patientNic, date);
+        fclose(appFile);
+        printf("\nAppointment booked successfully! Appointment number: %d\n", appointmentNumber);
+    } else {
+        printf("\nError: Could not book appointment!\n");
+    }
+}
+
 int main()
 {
     int choice;
@@ -391,7 +460,7 @@ int main()
                             viewDoctors();
                             break;
                         case 7:
-                            // bookAppointment();
+                            bookAppointment();
                             break;
                         case 8:
                             // cancelAppointment();
