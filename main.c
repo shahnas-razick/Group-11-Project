@@ -103,6 +103,95 @@ void addPatient()
 }
 
 
+void removePatient() {
+    char nic[13];
+    char choice;
+    FILE *file = fopen("./data/patients.txt", "r");
+    FILE *temp = fopen("./data/temp.txt", "w");
+
+    if (file == NULL || temp == NULL) {
+        printf("Error opening files!\n");
+        return;
+    }
+
+    printf("\nEnter patient NIC to remove: ");
+    scanf("%s", nic);
+
+    printf("Are you sure you want to remove this patient? (y/n): ");
+    getchar();
+    scanf("%c", &choice);
+
+    if (choice != 'y' && choice != 'Y') {
+        printf("Operation cancelled.\n");
+        fclose(file);
+        fclose(temp);
+        remove("./data/temp.txt");
+        return;
+    }
+
+    char line[256];
+    int found = 0;
+    while (fgets(line, sizeof(line), file)) {
+        if (strncmp(line, nic, strlen(nic)) != 0) {
+            fputs(line, temp);
+        } else {
+            found = 1;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("./data/patients.txt");
+    rename("./data/temp.txt", "./data/patients.txt");
+
+    if (found) {
+        printf("\nPatient removed successfully!\n");
+    } else {
+        printf("\nPatient not found!\n");
+    }
+}
+
+void viewPatients() {
+    FILE *file = fopen("./data/patients.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    printf("\n%-13s %-30s %-6s %-50s %-15s\n", "NIC", "Name", "Age", "Contact", "Address");
+    printf("------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        char nic[13], name[50], address[100], contact[15];
+        int age;
+        
+        // First get the fixed format fields
+        char *token = strtok(line, ",");
+        if (token) strcpy(nic, token);
+        
+        token = strtok(NULL, ",");
+        if (token) strcpy(name, token);
+        
+        token = strtok(NULL, ",");
+        if (token) age = atoi(token);
+        
+        // Get address (everything between the third and last comma)
+        token = strtok(NULL, ",");
+        if (token) strcpy(address, token);
+        
+        // Get the last field (contact)
+        token = strtok(NULL, "\n");
+        if (token) strcpy(contact, token);
+
+        printf("%-13s %-30s %-6d %-50s %-15s\n", 
+               nic, name, age, address, contact);
+    }
+
+    fclose(file);
+}
+
 int main()
 {
     int choice;
@@ -167,10 +256,10 @@ int main()
                             addPatient();
                             break;
                         case 2:
-                            // removePatient();
+                            removePatient();
                             break;
                         case 3:
-                            // viewPatients();
+                            viewPatients();
                             break;
                         case 4:
                             // addDoctor();
