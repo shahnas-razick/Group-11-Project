@@ -433,6 +433,61 @@ void cancelAppointment() {
     }
 }
 
+void viewAppointments() {
+    FILE *appFile = fopen("./data/appointments.txt", "r");
+    FILE *docFile = fopen("./data/doctors.txt", "r");
+    FILE *patFile = fopen("./data/patients.txt", "r");
+
+    if (!appFile || !docFile || !patFile) {
+        printf("Error opening files!\n");
+        return;
+    }
+
+    printf("\n%-5s %-13s %-30s %-13s %-30s %-12s\n", 
+           "ID", "Doctor NIC", "Doctor Name", "Patient NIC", "Patient Name", "Date");
+    printf("----------------------------------------------------------------------------------------\n");
+
+    char line[256];
+    while (fgets(line, sizeof(line), appFile)) {
+        int appId;
+        char docNic[13], patNic[13], date[11];
+        char docName[50] = "Unknown", patName[50] = "Unknown";
+
+        sscanf(line, "%d,%[^,],%[^,],%[^\n]", &appId, docNic, patNic, date);
+
+        // Find doctor name
+        rewind(docFile);
+        char docLine[256];
+        while (fgets(docLine, sizeof(docLine), docFile)) {
+            char currNic[13], name[50];
+            sscanf(docLine, "%[^,],%[^,]", currNic, name);
+            if (strcmp(currNic, docNic) == 0) {
+                strcpy(docName, name);
+                break;
+            }
+        }
+
+        // Find patient name
+        rewind(patFile);
+        char patLine[256];
+        while (fgets(patLine, sizeof(patLine), patFile)) {
+            char currNic[13], name[50];
+            sscanf(patLine, "%[^,],%[^,]", currNic, name);
+            if (strcmp(currNic, patNic) == 0) {
+                strcpy(patName, name);
+                break;
+            }
+        }
+
+        printf("%-5d %-13s %-30s %-13s %-30s %-12s\n", 
+               appId, docNic, docName, patNic, patName, date);
+    }
+
+    fclose(appFile);
+    fclose(docFile);
+    fclose(patFile);
+}
+
 int main()
 {
     int choice;
@@ -518,7 +573,7 @@ int main()
                             cancelAppointment();
                             break;
                         case 9:
-                            // viewAppointments();
+                            viewAppointments();
                             break;
                         case 10:
                             // removeMedicalRecords();
