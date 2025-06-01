@@ -192,6 +192,42 @@ void viewPatients() {
     fclose(file);
 }
 
+
+void addDoctor() {
+    char nic[13];
+    char name[50];
+    char specialization[100];
+    char address[100];
+    FILE *file = fopen("./data/doctors.txt", "a");
+
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    printf("\nEnter doctor details:\n");
+    printf("NIC (12 digits): ");
+    scanf("%s", nic);
+
+    printf("Full Name: ");
+    getchar();
+    fgets(name, sizeof(name), stdin);
+    name[strcspn(name, "\n")] = 0;
+
+    printf("Specialization Areas: ");
+    fgets(specialization, sizeof(specialization), stdin);
+    specialization[strcspn(specialization, "\n")] = 0;
+
+    printf("Address: ");
+    fgets(address, sizeof(address), stdin);
+    address[strcspn(address, "\n")] = 0;
+
+    fprintf(file, "%s,%s,%s,%s\n", nic, name, specialization, address);
+
+    fclose(file);
+    printf("\nDoctor added successfully!\n");
+}
+
 int main()
 {
     int choice;
@@ -262,7 +298,7 @@ int main()
                             viewPatients();
                             break;
                         case 4:
-                            // addDoctor();
+                            addDoctor();
                             break;
                         case 5:
                             // removeDoctor();
