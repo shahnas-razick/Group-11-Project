@@ -381,6 +381,58 @@ void bookAppointment() {
     }
 }
 
+void cancelAppointment() {
+    int appointmentId;
+    char choice;
+    FILE *file = fopen("./data/appointments.txt", "r");
+    FILE *temp = fopen("./data/temp.txt", "w");
+
+    if (file == NULL || temp == NULL) {
+        printf("Error opening files!\n");
+        return;
+    }
+
+    printf("\nEnter appointment ID to cancel: ");
+    scanf("%d", &appointmentId);
+
+    printf("Are you sure you want to cancel this appointment? (y/n): ");
+    getchar();
+    scanf("%c", &choice);
+
+    if (choice != 'y' && choice != 'Y') {
+        printf("Operation cancelled.\n");
+        fclose(file);
+        fclose(temp);
+        remove("./data/temp.txt");
+        return;
+    }
+
+    char line[256];
+    int found = 0;
+    int currentId;
+
+    while (fgets(line, sizeof(line), file)) {
+        sscanf(line, "%d,", &currentId);
+        if (currentId != appointmentId) {
+            fputs(line, temp);
+        } else {
+            found = 1;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("./data/appointments.txt");
+    rename("./data/temp.txt", "./data/appointments.txt");
+
+    if (found) {
+        printf("\nAppointment cancelled successfully!\n");
+    } else {
+        printf("\nAppointment not found!\n");
+    }
+}
+
 int main()
 {
     int choice;
@@ -463,7 +515,7 @@ int main()
                             bookAppointment();
                             break;
                         case 8:
-                            // cancelAppointment();
+                            cancelAppointment();
                             break;
                         case 9:
                             // viewAppointments();
