@@ -152,6 +152,45 @@ void removePatient() {
     }
 }
 
+void viewPatients() {
+    FILE *file = fopen("./data/patients.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    printf("\n%-13s %-30s %-6s %-50s %-15s\n", "NIC", "Name", "Age", "Contact", "Address");
+    printf("------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        char nic[13], name[50], address[100], contact[15];
+        int age;
+        
+        // First get the fixed format fields
+        char *token = strtok(line, ",");
+        if (token) strcpy(nic, token);
+        
+        token = strtok(NULL, ",");
+        if (token) strcpy(name, token);
+        
+        token = strtok(NULL, ",");
+        if (token) age = atoi(token);
+        
+        // Get address (everything between the third and last comma)
+        token = strtok(NULL, ",");
+        if (token) strcpy(address, token);
+        
+        // Get the last field (contact)
+        token = strtok(NULL, "\n");
+        if (token) strcpy(contact, token);
+
+        printf("%-13s %-30s %-6d %-50s %-15s\n", 
+               nic, name, age, address, contact);
+    }
+
+    fclose(file);
+}
 
 int main()
 {
@@ -220,7 +259,7 @@ int main()
                             removePatient();
                             break;
                         case 3:
-                            // viewPatients();
+                            viewPatients();
                             break;
                         case 4:
                             // addDoctor();
