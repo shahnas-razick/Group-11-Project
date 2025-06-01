@@ -279,6 +279,39 @@ void removeDoctor() {
 }
 
 
+void viewDoctors() {
+    FILE *file = fopen("./data/doctors.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    printf("\n%-13s %-30s %-40s %-30s\n", "NIC", "Name", "Specialization", "Address");
+    printf("----------------------------------------------------------------------------------------------------\n");
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        char nic[13], name[50], specialization[100], address[100];
+        
+        char *token = strtok(line, ",");
+        if (token) strcpy(nic, token);
+        
+        token = strtok(NULL, ",");
+        if (token) strcpy(name, token);
+        
+        token = strtok(NULL, ",");
+        if (token) strcpy(specialization, token);
+        
+        token = strtok(NULL, "\n");
+        if (token) strcpy(address, token);
+
+        printf("%-13s %-30s %-40s %-30s\n", 
+               nic, name, specialization, address);
+    }
+
+    fclose(file);
+}
+
 int main()
 {
     int choice;
@@ -355,7 +388,7 @@ int main()
                             removeDoctor();
                             break;
                         case 6:
-                            // viewDoctors();
+                            viewDoctors();
                             break;
                         case 7:
                             // bookAppointment();
