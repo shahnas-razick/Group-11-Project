@@ -192,6 +192,126 @@ void viewPatients() {
     fclose(file);
 }
 
+
+void addDoctor() {
+    char nic[13];
+    char name[50];
+    char specialization[100];
+    char address[100];
+    FILE *file = fopen("./data/doctors.txt", "a");
+
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    printf("\nEnter doctor details:\n");
+    printf("NIC (12 digits): ");
+    scanf("%s", nic);
+
+    printf("Full Name: ");
+    getchar();
+    fgets(name, sizeof(name), stdin);
+    name[strcspn(name, "\n")] = 0;
+
+    printf("Specialization Areas: ");
+    fgets(specialization, sizeof(specialization), stdin);
+    specialization[strcspn(specialization, "\n")] = 0;
+
+    printf("Address: ");
+    fgets(address, sizeof(address), stdin);
+    address[strcspn(address, "\n")] = 0;
+
+    fprintf(file, "%s,%s,%s,%s\n", nic, name, specialization, address);
+
+    fclose(file);
+    printf("\nDoctor added successfully!\n");
+}
+
+
+void removeDoctor() {
+    char nic[13];
+    char choice;
+    FILE *file = fopen("./data/doctors.txt", "r");
+    FILE *temp = fopen("./data/temp.txt", "w");
+
+    if (file == NULL || temp == NULL) {
+        printf("Error opening files!\n");
+        return;
+    }
+
+    printf("\nEnter doctor NIC to remove: ");
+    scanf("%s", nic);
+
+    printf("Are you sure you want to remove this doctor? (y/n): ");
+    getchar();
+    scanf("%c", &choice);
+
+    if (choice != 'y' && choice != 'Y') {
+        printf("Operation cancelled.\n");
+        fclose(file);
+        fclose(temp);
+        remove("./data/temp.txt");
+        return;
+    }
+
+    char line[256];
+    int found = 0;
+    while (fgets(line, sizeof(line), file)) {
+        if (strncmp(line, nic, strlen(nic)) != 0) {
+            fputs(line, temp);
+        } else {
+            found = 1;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("./data/doctors.txt");
+    rename("./data/temp.txt", "./data/doctors.txt");
+
+    if (found) {
+        printf("\nDoctor removed successfully!\n");
+    } else {
+        printf("\nDoctor not found!\n");
+    }
+}
+
+
+void viewDoctors() {
+    FILE *file = fopen("./data/doctors.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    printf("\n%-13s %-30s %-40s %-30s\n", "NIC", "Name", "Specialization", "Address");
+    printf("----------------------------------------------------------------------------------------------------\n");
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        char nic[13], name[50], specialization[100], address[100];
+        
+        char *token = strtok(line, ",");
+        if (token) strcpy(nic, token);
+        
+        token = strtok(NULL, ",");
+        if (token) strcpy(name, token);
+        
+        token = strtok(NULL, ",");
+        if (token) strcpy(specialization, token);
+        
+        token = strtok(NULL, "\n");
+        if (token) strcpy(address, token);
+
+        printf("%-13s %-30s %-40s %-30s\n", 
+               nic, name, specialization, address);
+    }
+
+    fclose(file);
+}
+
 int main()
 {
     int choice;
@@ -262,13 +382,13 @@ int main()
                             viewPatients();
                             break;
                         case 4:
-                            // addDoctor();
+                            addDoctor();
                             break;
                         case 5:
-                            // removeDoctor();
+                            removeDoctor();
                             break;
                         case 6:
-                            // viewDoctors();
+                            viewDoctors();
                             break;
                         case 7:
                             // bookAppointment();
