@@ -312,6 +312,182 @@ void viewDoctors() {
     fclose(file);
 }
 
+void bookAppointment() {
+    char docNic[13], patientNic[13], date[11];
+    int appointmentNumber = 1;
+    int docFound = 0, patientFound = 0;
+
+    // Get input
+    printf("\nEnter doctor's NIC: ");
+    scanf("%s", docNic);
+    printf("Enter patient's NIC: ");
+    scanf("%s", patientNic);
+    printf("Enter date (DD/MM/YYYY): ");
+    scanf("%s", date);
+
+    // Check if doctor exists
+    FILE *docFile = fopen("./data/doctors.txt", "r");
+    if (docFile != NULL) {
+        char line[256];
+        while (fgets(line, sizeof(line), docFile)) {
+            if (strncmp(line, docNic, strlen(docNic)) == 0) {
+                docFound = 1;
+                break;
+            }
+        }
+        fclose(docFile);
+    }
+
+    // Check if patient exists
+    FILE *patFile = fopen("./data/patients.txt", "r");
+    if (patFile != NULL) {
+        char line[256];
+        while (fgets(line, sizeof(line), patFile)) {
+            if (strncmp(line, patientNic, strlen(patientNic)) == 0) {
+                patientFound = 1;
+                break;
+            }
+        }
+        fclose(patFile);
+    }
+
+    if (!docFound || !patientFound) {
+        printf("\nError: Doctor or patient not found!\n");
+        return;
+    }
+
+    // Get last appointment number
+    FILE *appFile = fopen("./data/appointments.txt", "r");
+    if (appFile != NULL) {
+        char line[256];
+        while (fgets(line, sizeof(line), appFile)) {
+            int currentNum;
+            sscanf(line, "%d,", &currentNum);
+            if (currentNum >= appointmentNumber) {
+                appointmentNumber = currentNum + 1;
+            }
+        }
+        fclose(appFile);
+    }
+
+    // Add new appointment
+    appFile = fopen("./data/appointments.txt", "a");
+    if (appFile != NULL) {
+        fprintf(appFile, "%d,%s,%s,%s\n", appointmentNumber, docNic, patientNic, date);
+        fclose(appFile);
+        printf("\nAppointment booked successfully! Appointment number: %d\n", appointmentNumber);
+    } else {
+        printf("\nError: Could not book appointment!\n");
+    }
+}
+
+void cancelAppointment() {
+    int appointmentId;
+    char choice;
+    FILE *file = fopen("./data/appointments.txt", "r");
+    FILE *temp = fopen("./data/temp.txt", "w");
+
+    if (file == NULL || temp == NULL) {
+        printf("Error opening files!\n");
+        return;
+    }
+
+    printf("\nEnter appointment ID to cancel: ");
+    scanf("%d", &appointmentId);
+
+    printf("Are you sure you want to cancel this appointment? (y/n): ");
+    getchar();
+    scanf("%c", &choice);
+
+    if (choice != 'y' && choice != 'Y') {
+        printf("Operation cancelled.\n");
+        fclose(file);
+        fclose(temp);
+        remove("./data/temp.txt");
+        return;
+    }
+
+    char line[256];
+    int found = 0;
+    int currentId;
+
+    while (fgets(line, sizeof(line), file)) {
+        sscanf(line, "%d,", &currentId);
+        if (currentId != appointmentId) {
+            fputs(line, temp);
+        } else {
+            found = 1;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("./data/appointments.txt");
+    rename("./data/temp.txt", "./data/appointments.txt");
+
+    if (found) {
+        printf("\nAppointment cancelled successfully!\n");
+    } else {
+        printf("\nAppointment not found!\n");
+    }
+}
+
+void viewAppointments() {
+    FILE *appFile = fopen("./data/appointments.txt", "r");
+    FILE *docFile = fopen("./data/doctors.txt", "r");
+    FILE *patFile = fopen("./data/patients.txt", "r");
+
+    if (!appFile || !docFile || !patFile) {
+        printf("Error opening files!\n");
+        return;
+    }
+
+    printf("\n%-5s %-13s %-30s %-13s %-30s %-12s\n", 
+           "ID", "Doctor NIC", "Doctor Name", "Patient NIC", "Patient Name", "Date");
+    printf("----------------------------------------------------------------------------------------\n");
+
+    char line[256];
+    while (fgets(line, sizeof(line), appFile)) {
+        int appId;
+        char docNic[13], patNic[13], date[11];
+        char docName[50] = "Unknown", patName[50] = "Unknown";
+
+        sscanf(line, "%d,%[^,],%[^,],%[^\n]", &appId, docNic, patNic, date);
+
+        // Find doctor name
+        rewind(docFile);
+        char docLine[256];
+        while (fgets(docLine, sizeof(docLine), docFile)) {
+            char currNic[13], name[50];
+            sscanf(docLine, "%[^,],%[^,]", currNic, name);
+            if (strcmp(currNic, docNic) == 0) {
+                strcpy(docName, name);
+                break;
+            }
+        }
+
+        // Find patient name
+        rewind(patFile);
+        char patLine[256];
+        while (fgets(patLine, sizeof(patLine), patFile)) {
+            char currNic[13], name[50];
+            sscanf(patLine, "%[^,],%[^,]", currNic, name);
+            if (strcmp(currNic, patNic) == 0) {
+                strcpy(patName, name);
+                break;
+            }
+        }
+
+        printf("%-5d %-13s %-30s %-13s %-30s %-12s\n", 
+               appId, docNic, docName, patNic, patName, date);
+    }
+
+    fclose(appFile);
+    fclose(docFile);
+    fclose(patFile);
+}
+
 int main()
 {
     int choice;
@@ -391,13 +567,13 @@ int main()
                             viewDoctors();
                             break;
                         case 7:
-                            // bookAppointment();
+                            bookAppointment();
                             break;
                         case 8:
-                            // cancelAppointment();
+                            cancelAppointment();
                             break;
                         case 9:
-                            // viewAppointments();
+                            viewAppointments();
                             break;
                         case 10:
                             // removeMedicalRecords();
