@@ -687,7 +687,50 @@ int main()
                 }
                 else if (choice == 3)
                 {
-                    printf("\nYou are logged in as Lab Assistant.\n");
+                     docChoice = 0;
+                    while (docChoice != 4)
+                    {
+                        system("cls");
+                        printf("\n=== Staff Menu ===\n");
+                        printf("1. Book Appointment\n");
+                        printf("2. cancel appointment\n");
+                        printf("3. view appoinment details\n");
+                        printf("4. view doctors details\n");
+                        printf("5. Logout\n");
+                        printf("6. Exit\n");
+                        printf("Enter your choice (1-5): ");
+                        scanf("%d", &docChoice);
+                        
+                        if (docChoice == 5)
+                        {
+                            printf("\nLogging out...\n");
+                            break;
+                        }
+
+                        switch (docChoice)
+                        {
+                        case 1:
+                            bookAppointment();
+                            break;
+                        case 2:
+                            cancelAppointment();
+                            break;
+                        case 3:
+                            viewAppointments();
+                            break;
+                        case 4:
+                            viewDoctors();
+                            break;
+                        case 6:
+                            printf("\nExiting...\n");
+                            exit(0);
+                        default:
+                            printf("\nInvalid choice!\n");
+                        }
+                        printf("\nPress Enter to continue...");
+                        getchar();
+                        getchar();
+                    }
                 }
             }
             else
