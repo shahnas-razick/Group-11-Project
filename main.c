@@ -488,6 +488,59 @@ void viewAppointments() {
     fclose(patFile);
 }
 
+void removeMedicalRecords() {
+    int recordId;
+    char choice;
+    FILE *file = fopen("./data/medical_records.txt", "r");
+    FILE *temp = fopen("./data/temp.txt", "w");
+
+    if (file == NULL || temp == NULL) {
+        printf("Error opening files!\n");
+        return;
+    }
+
+    printf("\nEnter medical record ID to remove: ");
+    scanf("%d", &recordId);
+
+    printf("Are you sure you want to remove this record? (y/n): ");
+    getchar();
+    scanf("%c", &choice);
+
+    if (choice != 'y' && choice != 'Y') {
+        printf("Operation cancelled.\n");
+        fclose(file);
+        fclose(temp);
+        remove("./data/temp.txt");
+        return;
+    }
+
+    char line[512];
+    int found = 0;
+    int currentId;
+
+    while (fgets(line, sizeof(line), file)) {
+        sscanf(line, "%d,", &currentId);
+        if (currentId != recordId) {
+            fputs(line, temp);
+        } else {
+            found = 1;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("./data/medical_records.txt");
+    rename("./data/temp.txt", "./data/medical_records.txt");
+
+    if (found) {
+        printf("\nMedical record removed successfully!\n");
+    } else {
+        printf("\nMedical record not found!\n");
+    }
+}
+
+
 int main()
 {
     int choice;
@@ -576,7 +629,7 @@ int main()
                             viewAppointments();
                             break;
                         case 10:
-                            // removeMedicalRecords();
+                            removeMedicalRecords();
                             break;
                         case 12:
                             printf("\nExiting...\n");
