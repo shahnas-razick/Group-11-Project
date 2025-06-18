@@ -644,7 +644,46 @@ int main()
                 }
                 else if (choice == 2)
                 {
-                    printf("\nYou are logged in as Doctor.\n");
+                    docChoice = 0;
+                    while (docChoice != 4)
+                    {
+                        system("cls");
+                        printf("\n=== Doctor Menu ===\n");
+                        printf("1. add medical records\n");
+                        printf("2. view medical records\n");
+                        printf("3. view appoinment details\n");
+                        printf("4. Logout\n");
+                        printf("5. Exit\n");
+                        printf("Enter your choice (1-5): ");
+                        scanf("%d", &docChoice);
+                        
+                        if (docChoice == 4)
+                        {
+                            printf("\nLogging out...\n");
+                            break;
+                        }
+
+                        switch (docChoice)
+                        {
+                        case 1:
+                            addMedicalRecord();
+                            break;
+                        case 2:
+                            viewMedicalRecords();
+                            break;
+                        case 3:
+                            viewAppointments();
+                            break;
+                        case 5:
+                            printf("\nExiting...\n");
+                            exit(0);
+                        default:
+                            printf("\nInvalid choice!\n");
+                        }
+                        printf("\nPress Enter to continue...");
+                        getchar();
+                        getchar();
+                    }
                 }
                 else if (choice == 3)
                 {
